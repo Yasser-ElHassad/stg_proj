@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Dashboard{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="h-screen flex bg-gray-100">
+
+    <!-- Sidebar -->
+    <div class="w-64 bg-gray-800 text-white flex flex-col">
+        <div class="p-4 text-2xl font-bold border-b border-gray-700">CV-Dashboard</div>
+        <nav class="flex-1 p-4 space-y-2">
+             <a href="{% url 'home' %}"
+           class="block p-2 rounded {% if request.resolver_match.url_name == 'home' %}bg-blue-600{% else %}hover:bg-blue-600{% endif %}">
+           Home
+        </a>
+
+        <a href="{% url 'ocr' %}"
+           class="block p-2 rounded {% if request.resolver_match.url_name == 'ocr' %}bg-blue-600{% else %}hover:bg-blue-600{% endif %}">
+           OCR Model
+        </a>
+
+        <a href="{% url 'model2d' %}"
+           class="block p-2 rounded {% if request.resolver_match.url_name == 'model2d' %}bg-blue-600{% else %}hover:bg-blue-600{% endif %}">
+            2D Model
+        </a>
+
+        <a href="{% url 'model3d' %}"
+           class="block p-2 rounded {% if request.resolver_match.url_name == 'model3d' %}bg-blue-600{% else %}hover:bg-blue-600{% endif %}">
+           3D Model
+        </a>
+
+        <a href="{% url 'gui2code' %}"
+           class="block p-2 rounded {% if request.resolver_match.url_name == 'gui2code' %}bg-blue-600{% else %}hover:bg-blue-600{% endif %}">
+           GUI2Code
+        </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-6 overflow-y-auto">
+        {% block content %}
+        <!-- Each page will override this -->
+        {% endblock %}
+    </div>
+
+</body>
+</html>

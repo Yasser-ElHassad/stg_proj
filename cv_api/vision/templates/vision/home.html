@@ -1,0 +1,23 @@
+{% extends "vision/base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<h1 class="text-3xl font-bold mb-6">Welcome to Our Computer Vision Project</h1>
+<p class="mb-4 text-gray-700">
+    This project demonstrates multiple computer vision applications:
+</p>
+
+<ul class="list-disc list-inside space-y-2 text-gray-800">
+    <li><a href="{% url 'ocr' %}" class="text-blue-600 hover:underline">OCR Model</a> – Extracts text from images.</li>
+    <li><a href="{% url 'model2d' %}" class="text-blue-600 hover:underline">2D Model</a> – Handles 2D image classification and recognition.</li>
+    <li><a href="{% url 'model3d' %}" class="text-blue-600 hover:underline">3D Model</a> – Works with 3D object detection and reconstruction.</li>
+    <li><a href="{% url 'gui2code' %}" class="text-blue-600 hover:underline">GUI2Code</a> – Converts graphical user interface designs into code.</li>
+</ul>
+
+<!-- <div class="mt-6 p-4 bg-gray-100 border rounded">
+    <p class="text-gray-600">
+        Use the sidebar to navigate between different models and try them out.
+    </p>
+</div> -->
+{% endblock %}

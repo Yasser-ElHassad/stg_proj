@@ -6,6 +6,23 @@ import  os
 def dummy_model(image):
     # TODO: load your ML model (e.g. PyTorch/TensorFlow)
     return "cat"  # just a dummy return
+from django.shortcuts import render
+
+
+def home_view(request):
+    return render(request, "vision/home.html")
+
+def ocr_view(request):
+    return render(request, "vision/ocr.html")
+
+def model2d_view(request):
+    return render(request, "vision/model2d.html")
+
+def model3d_view(request):
+    return render(request, "vision/model3d.html")
+
+def gui2code_view(request):
+    return render(request, "vision/gui2code.html")
 
 def upload_and_predict(request):
     prediction = None
