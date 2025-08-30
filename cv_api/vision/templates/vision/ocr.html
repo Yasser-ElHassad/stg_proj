@@ -1,5 +1,59 @@
-{% include "vision/base.html" %}
-<div class="flex-1 p-6">
-    <h2 class="text-2xl font-bold mb-4">OCR Model</h2>
-    <p>Upload your document image here for OCR processing.</p>
+{% extends "vision/base.html" %}
+
+{% block title %}OCR Model{% endblock %}
+
+{% block content %}
+<h2 class="text-xl font-bold mb-4">OCR Text Extraction</h2>
+<form id="ocr-form" class="mb-6">
+    {% csrf_token %}
+    <input type="file" name="image" accept="image/*" class="mb-4 border p-2 w-full rounded" required>
+    <select name="language" class="mb-4 border p-2 w-full rounded">
+        <option value="eng">English</option>
+        <option value="fra">French</option>
+        <option value="spa">Spanish</option>
+        <option value="deu">German</option>
+    </select>
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        Extract Text
+    </button>
+</form>
+
+<div id="ocr-result" class="hidden">
+    <div class="p-3 bg-green-100 text-green-800 rounded mb-4">
+        <p><strong>Extracted Text:</strong></p>
+        <p id="extracted-text" class="mt-2"></p>
+        <p class="mt-2"><strong>Confidence:</strong> <span id="ocr-confidence"></span></p>
+        <p><strong>Processing Time:</strong> <span id="ocr-processing-time"></span>s</p>
+    </div>
+    <div id="ocr-image" class="mt-4"></div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+document.getElementById('ocr-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    
+    try {
+        const response = await axios.post('/api/ocr/', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        });
+        
+        const result = response.data;
+        
+        document.getElementById('extracted-text').textContent = result.extracted_text;
+        document.getElementById('ocr-confidence').textContent = (result.confidence * 100).toFixed(1) + '%';
+        document.getElementById('ocr-processing-time').textContent = result.processing_time;
+        
+        document.getElementById('ocr-image').innerHTML = 
+            `<img src="${result.image_url}" class="rounded shadow-md max-w-sm" alt="Uploaded Image">`;
+        
+        document.getElementById('ocr-result').classList.remove('hidden');
+    } catch (error) {
+        alert('Error: ' + (error.response?.data?.error || 'Unknown error occurred'));
+    }
+});
+</script>
+{% endblock %}

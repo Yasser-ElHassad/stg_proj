@@ -4,21 +4,49 @@
 
 {% block content %}
 <h2 class="text-xl font-bold mb-4">Upload an Image</h2>
-<form method="post" enctype="multipart/form-data" class="mb-6">
+<form id="predict-form" class="mb-6">
     {% csrf_token %}
-    <input type="file" name="image" accept="image/*" class="mb-4 border p-2 w-full rounded">
-    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Predict</button>
+    <input type="file" name="image" accept="image/*" class="mb-4 border p-2 w-full rounded" required>
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        Predict
+    </button>
 </form>
 
-{% if prediction %}
-<div class="p-3 bg-green-100 text-green-800 rounded mb-4">
-    Prediction: <b>{{ prediction }}</b>
+<div id="predict-result" class="hidden">
+    <div class="p-3 bg-green-100 text-green-800 rounded mb-4">
+        <p><strong>Prediction:</strong> <span id="prediction-text"></span></p>
+        <p><strong>Confidence:</strong> <span id="confidence-text"></span></p>
+        <p><strong>Processing Time:</strong> <span id="processing-time"></span>s</p>
+    </div>
+    <div id="prediction-image" class="mt-4"></div>
 </div>
-{% endif %}
 
-{% if uploaded_image_url %}
-<div class="mt-4">
-    <img src="{{ uploaded_image_url }}" class="rounded shadow-md max-w-sm" alt="Uploaded Image">
-</div>
-{% endif %}
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+document.getElementById('predict-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    
+    try {
+        const response = await axios.post('/api/predict/', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        });
+        
+        const result = response.data;
+        
+        document.getElementById('prediction-text').textContent = result.prediction;
+        document.getElementById('confidence-text').textContent = (result.confidence * 100).toFixed(1) + '%';
+        document.getElementById('processing-time').textContent = result.processing_time;
+        
+        document.getElementById('prediction-image').innerHTML = 
+            `<img src="${result.image_url}" class="rounded shadow-md max-w-sm" alt="Uploaded Image">`;
+        
+        document.getElementById('predict-result').classList.remove('hidden');
+    } catch (error) {
+        alert('Error: ' + (error.response?.data?.error || 'Unknown error occurred'));
+    }
+});
+</script>
 {% endblock %}

@@ -3,6 +3,56 @@
 {% block title %}2D Model{% endblock %}
 
 {% block content %}
-<h2 class="text-2xl font-bold mb-4">2D Model</h2>
-<p>This page will handle 2D image analysis.</p>
+<h2 class="text-xl font-bold mb-4">2D Object Detection</h2>
+<form id="2d-form" class="mb-6">
+    {% csrf_token %}
+    <input type="file" name="image" accept="image/*" class="mb-4 border p-2 w-full rounded" required>
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        Detect Objects
+    </button>
+</form>
+
+<div id="2d-result" class="hidden">
+    <div class="p-3 bg-green-100 text-green-800 rounded mb-4">
+        <p><strong>Detected Objects:</strong></p>
+        <div id="2d-objects" class="mt-2"></div>
+        <p class="mt-2"><strong>Processing Time:</strong> <span id="2d-processing-time"></span>s</p>
+    </div>
+    <div id="2d-image" class="mt-4"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+document.getElementById('2d-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    
+    try {
+        const response = await axios.post('/api/2d/', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        });
+        
+        const result = response.data;
+        
+        const objectsHtml = result.objects.map(obj => 
+            `<div class="mb-2">
+                <strong>${obj.class}</strong> (${(obj.confidence * 100).toFixed(1)}%)
+                <br><small>BBox: [${obj.bbox.join(', ')}]</small>
+            </div>`
+        ).join('');
+        
+        document.getElementById('2d-objects').innerHTML = objectsHtml;
+        document.getElementById('2d-processing-time').textContent = result.processing_time;
+        
+        document.getElementById('2d-image').innerHTML = 
+            `<img src="${result.image_url}" class="rounded shadow-md max-w-sm" alt="Uploaded Image">`;
+        
+        document.getElementById('2d-result').classList.remove('hidden');
+    } catch (error) {
+        alert('Error: ' + (error.response?.data?.error || 'Unknown error occurred'));
+    }
+});
+</script>
 {% endblock %}
