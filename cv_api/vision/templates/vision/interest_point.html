@@ -1,0 +1,71 @@
+{% extends "vision/base.html" %}
+
+{% block title %}Interest Point Detection{% endblock %}
+
+{% block content %}
+<h2 class="text-xl font-bold mb-4">Interest Point Detection</h2>
+<form id="interest-point-form" class="mb-6">
+    {% csrf_token %}
+    <input type="file" name="image" accept="image/*" class="mb-4 border p-2 w-full rounded" required>
+    <select name="detection_type" class="mb-4 border p-2 w-full rounded">
+        <option value="corners">Corner Detection</option>
+        <option value="edges">Edge Detection</option>
+        <option value="blobs">Blob Detection</option>
+        <option value="keypoints">Keypoint Detection</option>
+    </select>
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        Detect Interest Points
+    </button>
+</form>
+
+<div id="interest-point-result" class="hidden">
+    <div class="p-3 bg-green-100 text-green-800 rounded mb-4">
+        <p><strong>Detection Type:</strong> <span id="detection-type"></span></p>
+        <p><strong>Points Found:</strong> <span id="points-count"></span></p>
+        <p><strong>Processing Time:</strong> <span id="interest-point-processing-time"></span>s</p>
+    </div>
+    <div class="mt-4">
+        <h4 class="font-bold mb-2">Detected Points:</h4>
+        <div id="interest-points-list" class="bg-gray-100 p-4 rounded max-h-60 overflow-y-auto"></div>
+    </div>
+    <div id="interest-point-image" class="mt-4"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+document.getElementById('interest-point-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    
+    try {
+        const response = await axios.post('/api/interest-point/', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        });
+        
+        const result = response.data;
+        
+        document.getElementById('detection-type').textContent = result.detection_type.toUpperCase();
+        document.getElementById('points-count').textContent = result.points.length;
+        document.getElementById('interest-point-processing-time').textContent = result.processing_time;
+        
+        const pointsHtml = result.points.map((point, index) => 
+            `<div class="mb-2 text-sm">
+                <strong>Point ${index + 1}:</strong> (${point.x}, ${point.y}) 
+                <span class="text-gray-500">- Confidence: ${(point.confidence * 100).toFixed(1)}%</span>
+            </div>`
+        ).join('');
+        
+        document.getElementById('interest-points-list').innerHTML = pointsHtml;
+        
+        document.getElementById('interest-point-image').innerHTML = 
+            `<img src="${result.image_url}" class="rounded shadow-md max-w-sm" alt="Uploaded Image">`;
+        
+        document.getElementById('interest-point-result').classList.remove('hidden');
+    } catch (error) {
+        alert('Error: ' + (error.response?.data?.error || 'Unknown error occurred'));
+    }
+});
+</script>
+{% endblock %}

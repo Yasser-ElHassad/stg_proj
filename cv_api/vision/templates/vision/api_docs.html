@@ -153,6 +153,41 @@
         </div>
     </div>
 
+    <!-- Interest Point Detection -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">Interest Point Detection</h2>
+        <div class="bg-gray-100 p-4 rounded mb-4">
+            <p class="text-sm text-gray-600 mb-2"><strong>Endpoint:</strong></p>
+            <code class="text-green-600">POST /api/interest-point/</code>
+        </div>
+        <p class="text-gray-700 mb-4">Detect interest points in images (corners, edges, blobs, keypoints).</p>
+        <div class="bg-gray-50 p-4 rounded mb-4">
+            <p class="text-sm font-semibold mb-2">Request:</p>
+            <p class="text-sm text-gray-600">Form data with image file and detection_type parameter</p>
+            <p class="text-sm text-gray-500 mt-2">Supported detection types: corners, edges, blobs, keypoints</p>
+        </div>
+        <div class="bg-gray-50 p-4 rounded">
+            <p class="text-sm font-semibold mb-2">Response:</p>
+            <pre class="text-sm text-gray-800"><code>{
+  "points": [
+    {
+      "x": 100,
+      "y": 150,
+      "confidence": 0.95
+    },
+    {
+      "x": 250,
+      "y": 200,
+      "confidence": 0.92
+    }
+  ],
+  "detection_type": "corners",
+  "image_url": "/media/uploads/image.jpg",
+  "processing_time": 0.567
+}</code></pre>
+        </div>
+    </div>
+
     <!-- GUI to Code -->
     <div class="bg-white rounded-lg shadow-md p-6 mb-6">
         <h2 class="text-2xl font-bold text-gray-900 mb-4">GUI to Code Conversion</h2>

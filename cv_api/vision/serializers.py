@@ -110,3 +110,33 @@ class GUI2CodeResponseSerializer(serializers.Serializer):
     framework = serializers.CharField(help_text="Target framework used")
     image_url = serializers.URLField(help_text="URL to the uploaded image")
     processing_time = serializers.FloatField(help_text="Time taken for code generation in seconds")
+
+
+class InterestPointRequestSerializer(serializers.Serializer):
+    """Serializer for interest point detection requests"""
+    image = serializers.ImageField(
+        help_text="Upload an image for interest point detection",
+        max_length=255,
+        allow_empty_file=False
+    )
+    detection_type = serializers.ChoiceField(
+        choices=[
+            ('corners', 'Corner Detection'),
+            ('edges', 'Edge Detection'),
+            ('blobs', 'Blob Detection'),
+            ('keypoints', 'Keypoint Detection'),
+        ],
+        default='corners',
+        help_text="Type of interest point detection to perform"
+    )
+
+
+class InterestPointResponseSerializer(serializers.Serializer):
+    """Serializer for interest point detection responses"""
+    points = serializers.ListField(
+        child=serializers.DictField(),
+        help_text="List of detected interest points with coordinates and confidence"
+    )
+    detection_type = serializers.CharField(help_text="Type of detection performed")
+    image_url = serializers.URLField(help_text="URL to the uploaded image")
+    processing_time = serializers.FloatField(help_text="Time taken for detection in seconds")

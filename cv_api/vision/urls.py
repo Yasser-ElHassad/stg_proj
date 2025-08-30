@@ -1,8 +1,8 @@
 from django.urls import path
 from django.shortcuts import render
 from .views import (
-    upload_and_predict, ocr_view, model2d_view, model3d_view, gui2code_view, home_view,
-    api_upload_and_predict, api_ocr, api_model2d, api_model3d, api_gui2code, api_health_check
+    upload_and_predict, ocr_view, model2d_view, model3d_view, gui2code_view, home_view, interest_point_view,
+    api_upload_and_predict, api_ocr, api_model2d, api_model3d, api_gui2code, api_health_check, api_interest_point
 )
 
 urlpatterns = [
@@ -13,6 +13,7 @@ urlpatterns = [
     path("2d/", model2d_view, name="model2d"),
     path("3d/", model3d_view, name="model3d"),
     path("gui2code/", gui2code_view, name="gui2code"),
+    path("interest-point/", interest_point_view, name="interest_point"),
     path("api-docs/", lambda request: render(request, "vision/api_docs.html"), name="api_docs"),
     
     # API URLs (new)
@@ -22,4 +23,5 @@ urlpatterns = [
     path("api/2d/", api_model2d, name="api_2d"),
     path("api/3d/", api_model3d, name="api_3d"),
     path("api/gui2code/", api_gui2code, name="api_gui2code"),
+    path("api/interest-point/", api_interest_point, name="api_interest_point"),
 ]

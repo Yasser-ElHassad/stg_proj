@@ -12,7 +12,8 @@ from .serializers import (
     OCRRequestSerializer, OCRResponseSerializer,
     Model2DRequestSerializer, Model2DResponseSerializer,
     Model3DRequestSerializer, Model3DResponseSerializer,
-    GUI2CodeRequestSerializer, GUI2CodeResponseSerializer
+    GUI2CodeRequestSerializer, GUI2CodeResponseSerializer,
+    InterestPointRequestSerializer, InterestPointResponseSerializer
 )
 
 # Example placeholder model (replace with your real model)
@@ -61,6 +62,37 @@ export default GeneratedComponent;"""
     else:
         return f"Generated code for {framework} framework"
 
+def dummy_interest_point_model(image, detection_type="corners"):
+    # TODO: implement actual interest point detection
+    if detection_type == "corners":
+        return [
+            {"x": 100, "y": 150, "confidence": 0.95},
+            {"x": 250, "y": 200, "confidence": 0.92},
+            {"x": 400, "y": 300, "confidence": 0.88},
+            {"x": 150, "y": 400, "confidence": 0.85}
+        ]
+    elif detection_type == "edges":
+        return [
+            {"x": 120, "y": 180, "confidence": 0.94},
+            {"x": 280, "y": 220, "confidence": 0.91},
+            {"x": 420, "y": 320, "confidence": 0.87}
+        ]
+    elif detection_type == "blobs":
+        return [
+            {"x": 110, "y": 160, "confidence": 0.93},
+            {"x": 260, "y": 210, "confidence": 0.90},
+            {"x": 410, "y": 310, "confidence": 0.86},
+            {"x": 160, "y": 410, "confidence": 0.83}
+        ]
+    else:  # keypoints
+        return [
+            {"x": 105, "y": 155, "confidence": 0.96},
+            {"x": 255, "y": 205, "confidence": 0.93},
+            {"x": 405, "y": 305, "confidence": 0.89},
+            {"x": 155, "y": 405, "confidence": 0.84},
+            {"x": 300, "y": 250, "confidence": 0.82}
+        ]
+
 # Template-based views (existing)
 def home_view(request):
     return render(request, "vision/home.html")
@@ -76,6 +108,9 @@ def model3d_view(request):
 
 def gui2code_view(request):
     return render(request, "vision/gui2code.html")
+
+def interest_point_view(request):
+    return render(request, "vision/interest_point.html")
 
 def upload_and_predict(request):
     prediction = None
@@ -281,6 +316,45 @@ def api_gui2code(request):
     except Exception as e:
         return Response(
             {'error': f'Code generation failed: {str(e)}'}, 
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+@api_view(['POST'])
+@parser_classes([MultiPartParser, FormParser])
+def api_interest_point(request):
+    """API endpoint for interest point detection"""
+    start_time = time.time()
+    
+    serializer = InterestPointRequestSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        image = serializer.validated_data['image']
+        detection_type = serializer.validated_data.get('detection_type', 'corners')
+        
+        # Save image
+        file_path = default_storage.save(f'uploads/{image.name}', image)
+        image_url = settings.MEDIA_URL + file_path
+        
+        # Detect interest points (replace with actual interest point detection model)
+        points = dummy_interest_point_model(image, detection_type)
+        
+        processing_time = time.time() - start_time
+        
+        response_data = {
+            'points': points,
+            'detection_type': detection_type,
+            'image_url': image_url,
+            'processing_time': round(processing_time, 3)
+        }
+        
+        response_serializer = InterestPointResponseSerializer(response_data)
+        return Response(response_serializer.data, status=status.HTTP_200_OK)
+        
+    except Exception as e:
+        return Response(
+            {'error': f'Interest point detection failed: {str(e)}'}, 
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
