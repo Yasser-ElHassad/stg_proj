@@ -1,0 +1,273 @@
+{% extends "vision/base.html" %}
+
+{% block title %}API Documentation{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <h1 class="text-4xl font-bold text-gray-900 mb-8">API Documentation</h1>
+    
+    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-8">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <div class="ml-3">
+                <p class="text-sm text-blue-700">
+                    <strong>Base URL:</strong> <code class="bg-blue-100 px-2 py-1 rounded">http://localhost:8000/api/</code>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Health Check -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">Health Check</h2>
+        <div class="bg-gray-100 p-4 rounded mb-4">
+            <p class="text-sm text-gray-600 mb-2"><strong>Endpoint:</strong></p>
+            <code class="text-green-600">GET /api/health/</code>
+        </div>
+        <p class="text-gray-700 mb-4">Check if the API is running and healthy.</p>
+        <div class="bg-gray-50 p-4 rounded">
+            <p class="text-sm font-semibold mb-2">Response:</p>
+            <pre class="text-sm text-gray-800"><code>{
+  "status": "healthy",
+  "message": "CV API is running",
+  "version": "1.0.0"
+}</code></pre>
+        </div>
+    </div>
+
+    <!-- Image Prediction -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">Image Classification</h2>
+        <div class="bg-gray-100 p-4 rounded mb-4">
+            <p class="text-sm text-gray-600 mb-2"><strong>Endpoint:</strong></p>
+            <code class="text-green-600">POST /api/predict/</code>
+        </div>
+        <p class="text-gray-700 mb-4">Upload an image and get a classification prediction.</p>
+        <div class="bg-gray-50 p-4 rounded mb-4">
+            <p class="text-sm font-semibold mb-2">Request:</p>
+            <p class="text-sm text-gray-600">Form data with image file</p>
+        </div>
+        <div class="bg-gray-50 p-4 rounded">
+            <p class="text-sm font-semibold mb-2">Response:</p>
+            <pre class="text-sm text-gray-800"><code>{
+  "prediction": "cat",
+  "confidence": 0.95,
+  "image_url": "/media/uploads/image.jpg",
+  "processing_time": 0.123
+}</code></pre>
+        </div>
+    </div>
+
+    <!-- OCR -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">OCR Text Extraction</h2>
+        <div class="bg-gray-100 p-4 rounded mb-4">
+            <p class="text-sm text-gray-600 mb-2"><strong>Endpoint:</strong></p>
+            <code class="text-green-600">POST /api/ocr/</code>
+        </div>
+        <p class="text-gray-700 mb-4">Extract text from an image using OCR.</p>
+        <div class="bg-gray-50 p-4 rounded mb-4">
+            <p class="text-sm font-semibold mb-2">Request:</p>
+            <p class="text-sm text-gray-600">Form data with image file and optional language parameter</p>
+        </div>
+        <div class="bg-gray-50 p-4 rounded">
+            <p class="text-sm font-semibold mb-2">Response:</p>
+            <pre class="text-sm text-gray-800"><code>{
+  "extracted_text": "Sample extracted text from image",
+  "confidence": 0.92,
+  "image_url": "/media/uploads/image.jpg",
+  "processing_time": 0.456
+}</code></pre>
+        </div>
+    </div>
+
+    <!-- 2D Object Detection -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">2D Object Detection</h2>
+        <div class="bg-gray-100 p-4 rounded mb-4">
+            <p class="text-sm text-gray-600 mb-2"><strong>Endpoint:</strong></p>
+            <code class="text-green-600">POST /api/2d/</code>
+        </div>
+        <p class="text-gray-700 mb-4">Detect objects in 2D images with bounding boxes.</p>
+        <div class="bg-gray-50 p-4 rounded mb-4">
+            <p class="text-sm font-semibold mb-2">Request:</p>
+            <p class="text-sm text-gray-600">Form data with image file</p>
+        </div>
+        <div class="bg-gray-50 p-4 rounded">
+            <p class="text-sm font-semibold mb-2">Response:</p>
+            <pre class="text-sm text-gray-800"><code>{
+  "objects": [
+    {
+      "class": "person",
+      "confidence": 0.95,
+      "bbox": [100, 100, 200, 300]
+    },
+    {
+      "class": "car",
+      "confidence": 0.87,
+      "bbox": [300, 150, 450, 250]
+    }
+  ],
+  "image_url": "/media/uploads/image.jpg",
+  "processing_time": 0.789
+}</code></pre>
+        </div>
+    </div>
+
+    <!-- 3D Object Detection -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">3D Object Detection</h2>
+        <div class="bg-gray-100 p-4 rounded mb-4">
+            <p class="text-sm text-gray-600 mb-2"><strong>Endpoint:</strong></p>
+            <code class="text-green-600">POST /api/3d/</code>
+        </div>
+        <p class="text-gray-700 mb-4">Detect 3D objects with depth information.</p>
+        <div class="bg-gray-50 p-4 rounded mb-4">
+            <p class="text-sm font-semibold mb-2">Request:</p>
+            <p class="text-sm text-gray-600">Form data with image file</p>
+        </div>
+        <div class="bg-gray-50 p-4 rounded">
+            <p class="text-sm font-semibold mb-2">Response:</p>
+            <pre class="text-sm text-gray-800"><code>{
+  "objects_3d": [
+    {
+      "class": "chair",
+      "confidence": 0.92,
+      "depth": 2.5,
+      "position": [1.2, 0.8, 2.5]
+    },
+    {
+      "class": "table",
+      "confidence": 0.88,
+      "depth": 1.8,
+      "position": [0.5, 0.0, 1.8]
+    }
+  ],
+  "image_url": "/media/uploads/image.jpg",
+  "processing_time": 1.234
+}</code></pre>
+        </div>
+    </div>
+
+    <!-- Interest Point Detection -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">Interest Point Detection</h2>
+        <div class="bg-gray-100 p-4 rounded mb-4">
+            <p class="text-sm text-gray-600 mb-2"><strong>Endpoint:</strong></p>
+            <code class="text-green-600">POST /api/interest-point/</code>
+        </div>
+        <p class="text-gray-700 mb-4">Detect interest points in images (corners, edges, blobs, keypoints).</p>
+        <div class="bg-gray-50 p-4 rounded mb-4">
+            <p class="text-sm font-semibold mb-2">Request:</p>
+            <p class="text-sm text-gray-600">Form data with image file and detection_type parameter</p>
+            <p class="text-sm text-gray-500 mt-2">Supported detection types: corners, edges, blobs, keypoints</p>
+        </div>
+        <div class="bg-gray-50 p-4 rounded">
+            <p class="text-sm font-semibold mb-2">Response:</p>
+            <pre class="text-sm text-gray-800"><code>{
+  "points": [
+    {
+      "x": 100,
+      "y": 150,
+      "confidence": 0.95
+    },
+    {
+      "x": 250,
+      "y": 200,
+      "confidence": 0.92
+    }
+  ],
+  "detection_type": "corners",
+  "image_url": "/media/uploads/image.jpg",
+  "processing_time": 0.567
+}</code></pre>
+        </div>
+    </div>
+
+    <!-- GUI to Code -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">GUI to Code Conversion</h2>
+        <div class="bg-gray-100 p-4 rounded mb-4">
+            <p class="text-sm text-gray-600 mb-2"><strong>Endpoint:</strong></p>
+            <code class="text-green-600">POST /api/gui2code/</code>
+        </div>
+        <p class="text-gray-700 mb-4">Convert GUI screenshots to code in various frameworks.</p>
+        <div class="bg-gray-50 p-4 rounded mb-4">
+            <p class="text-sm font-semibold mb-2">Request:</p>
+            <p class="text-sm text-gray-600">Form data with image file and target_framework parameter</p>
+            <p class="text-sm text-gray-500 mt-2">Supported frameworks: html, react, vue, flutter, swift</p>
+        </div>
+        <div class="bg-gray-50 p-4 rounded">
+            <p class="text-sm font-semibold mb-2">Response:</p>
+            <pre class="text-sm text-gray-800"><code>{
+  "generated_code": "&lt;div class=\"container\"&gt;...&lt;/div&gt;",
+  "framework": "html",
+  "image_url": "/media/uploads/image.jpg",
+  "processing_time": 2.345
+}</code></pre>
+        </div>
+    </div>
+
+    <!-- Usage Examples -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">Usage Examples</h2>
+        
+        <div class="mb-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">cURL Example</h3>
+            <div class="bg-gray-900 text-green-400 p-4 rounded">
+                <pre class="text-sm"><code>curl -X POST http://localhost:8000/api/predict/ \
+  -F "image=@/path/to/your/image.jpg"</code></pre>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Python Example</h3>
+            <div class="bg-gray-900 text-green-400 p-4 rounded">
+                <pre class="text-sm"><code>import requests
+
+url = "http://localhost:8000/api/predict/"
+files = {"image": open("image.jpg", "rb")}
+response = requests.post(url, files=files)
+result = response.json()
+print(result)</code></pre>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">JavaScript Example</h3>
+            <div class="bg-gray-900 text-green-400 p-4 rounded">
+                <pre class="text-sm"><code>const formData = new FormData();
+formData.append('image', fileInput.files[0]);
+
+fetch('http://localhost:8000/api/predict/', {
+  method: 'POST',
+  body: formData
+})
+.then(response => response.json())
+.then(data => console.log(data));</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Handling -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">Error Handling</h2>
+        <p class="text-gray-700 mb-4">All endpoints return appropriate HTTP status codes and error messages.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-red-50 border border-red-200 rounded p-4">
+                <h3 class="font-semibold text-red-800 mb-2">400 Bad Request</h3>
+                <p class="text-sm text-red-700">Invalid input data or missing required fields</p>
+            </div>
+            <div class="bg-red-50 border border-red-200 rounded p-4">
+                <h3 class="font-semibold text-red-800 mb-2">500 Internal Server Error</h3>
+                <p class="text-sm text-red-700">Server-side processing error</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
