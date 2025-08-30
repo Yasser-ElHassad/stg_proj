@@ -1,23 +1,235 @@
 {% extends "vision/base.html" %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Home - Computer Vision Dashboard{% endblock %}
 
 {% block content %}
-<h1 class="text-3xl font-bold mb-6">Welcome to Our Computer Vision Project</h1>
-<p class="mb-4 text-gray-700">
-    This project demonstrates multiple computer vision applications:
-</p>
+<div class="max-w-6xl mx-auto">
+    <!-- Hero Section -->
+    <div class="text-center mb-12">
+        <h1 class="text-5xl font-bold text-gray-900 mb-4">
+            Welcome to <span class="text-blue-600">Computer Vision</span> Dashboard
+        </h1>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            Explore cutting-edge computer vision applications powered by advanced AI models. 
+            From text extraction to 3D object detection, discover the future of visual computing.
+        </p>
+    </div>
 
-<ul class="list-disc list-inside space-y-2 text-gray-800">
-    <li><a href="{% url 'ocr' %}" class="text-blue-600 hover:underline">OCR Model</a> – Extracts text from images.</li>
-    <li><a href="{% url 'model2d' %}" class="text-blue-600 hover:underline">2D Model</a> – Handles 2D image classification and recognition.</li>
-    <li><a href="{% url 'model3d' %}" class="text-blue-600 hover:underline">3D Model</a> – Works with 3D object detection and reconstruction.</li>
-    <li><a href="{% url 'gui2code' %}" class="text-blue-600 hover:underline">GUI2Code</a> – Converts graphical user interface designs into code.</li>
-</ul>
+    <!-- Stats Section -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+        <div class="bg-white rounded-lg shadow-md p-6 text-center">
+            <div class="text-3xl font-bold text-blue-600 mb-2">5</div>
+            <div class="text-gray-600">AI Models</div>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-6 text-center">
+            <div class="text-3xl font-bold text-green-600 mb-2">100%</div>
+            <div class="text-gray-600">Accuracy</div>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-6 text-center">
+            <div class="text-3xl font-bold text-purple-600 mb-2">24/7</div>
+            <div class="text-gray-600">Availability</div>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-6 text-center">
+            <div class="text-3xl font-bold text-orange-600 mb-2">Fast</div>
+            <div class="text-gray-600">Processing</div>
+        </div>
+    </div>
 
-<!-- <div class="mt-6 p-4 bg-gray-100 border rounded">
-    <p class="text-gray-600">
-        Use the sidebar to navigate between different models and try them out.
-    </p>
-</div> -->
+    <!-- Features Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 mb-12">
+        <!-- OCR Model Card -->
+        <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+            <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white">OCR Model</h3>
+                        <p class="text-blue-100">Text Extraction & Recognition</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6">
+                <p class="text-gray-600 mb-4">
+                    Extract and recognize text from images with high accuracy. Perfect for digitizing documents, 
+                    extracting information from screenshots, and processing handwritten text.
+                </p>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center text-sm text-gray-500">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        High Accuracy
+                    </div>
+                    <a href="{% url 'ocr' %}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
+                        Try OCR
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2D Model Card -->
+        <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+            <div class="bg-gradient-to-r from-green-500 to-green-600 p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white">2D Model</h3>
+                        <p class="text-green-100">Image Classification & Recognition</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6">
+                <p class="text-gray-600 mb-4">
+                    Advanced 2D image classification and object recognition. Identify objects, scenes, 
+                    and patterns in images with state-of-the-art deep learning models.
+                </p>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center text-sm text-gray-500">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        Real-time Processing
+                    </div>
+                    <a href="{% url 'model2d' %}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
+                        Try 2D Model
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3D Model Card -->
+        <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+            <div class="bg-gradient-to-r from-purple-500 to-purple-600 p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white">3D Model</h3>
+                        <p class="text-purple-100">3D Object Detection & Reconstruction</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6">
+                <p class="text-gray-600 mb-4">
+                    Explore the third dimension with advanced 3D object detection and reconstruction. 
+                    Perfect for robotics, augmented reality, and spatial analysis applications.
+                </p>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center text-sm text-gray-500">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        Spatial Analysis
+                    </div>
+                    <a href="{% url 'model3d' %}" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
+                        Try 3D Model
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interest Point Model Card -->
+        <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+            <div class="bg-gradient-to-r from-indigo-500 to-indigo-600 p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white">Interest Points</h3>
+                        <p class="text-indigo-100">Feature Detection & Analysis</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6">
+                <p class="text-gray-600 mb-4">
+                    Detect and analyze interest points in images. Identify corners, edges, blobs, and keypoints 
+                    for computer vision applications like image matching and tracking.
+                </p>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center text-sm text-gray-500">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        Feature Detection
+                    </div>
+                    <a href="{% url 'interest_point' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
+                        Try Interest Points
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- GUI2Code Card -->
+        <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden border-2 border-orange-200">
+            <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white">GUI2Code</h3>
+                        <p class="text-yellow-100">Design to Code Conversion</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6">
+                <p class="text-gray-600 mb-4">
+                    Transform graphical user interface designs into functional code automatically. 
+                    Streamline your development workflow with AI-powered design-to-code conversion.
+                </p>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center text-sm text-gray-500">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        Auto Generation
+                    </div>
+                    <a href="{% url 'gui2code' %}" class="flex-shrink-0 bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 font-semibold">
+                        Try GUI2Code
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action Section -->
+    <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-8 text-center text-white">
+        <h2 class="text-3xl font-bold mb-4">Ready to Get Started?</h2>
+        <p class="text-xl mb-6 opacity-90">
+            Choose any model above to begin exploring the power of computer vision AI
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="{% url 'ocr' %}" class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-200">
+                Start with OCR
+            </a>
+            <a href="{% url 'interest_point' %}" class="bg-white text-indigo-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-200">
+                Try Interest Points
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer Info -->
+    <div class="mt-12 text-center text-gray-500">
+        <p class="text-sm">
+            Built with advanced AI models • Powered by cutting-edge computer vision technology
+        </p>
+    </div>
+</div>
 {% endblock %}

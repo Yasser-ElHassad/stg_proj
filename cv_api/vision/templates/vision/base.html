@@ -31,9 +31,19 @@
            3D Model
         </a>
 
+        <a href="{% url 'interest_point' %}"
+           class="block p-2 rounded {% if request.resolver_match.url_name == 'interest_point' %}bg-blue-600{% else %}hover:bg-blue-600{% endif %}">
+           Interest Points
+        </a>
+
         <a href="{% url 'gui2code' %}"
            class="block p-2 rounded {% if request.resolver_match.url_name == 'gui2code' %}bg-blue-600{% else %}hover:bg-blue-600{% endif %}">
            GUI2Code
+        </a>
+
+        <a href="{% url 'api_docs' %}"
+           class="block p-2 rounded {% if request.resolver_match.url_name == 'api_docs' %}bg-blue-600{% else %}hover:bg-blue-600{% endif %}">
+           API Docs
         </a>
         </nav>
     </div>

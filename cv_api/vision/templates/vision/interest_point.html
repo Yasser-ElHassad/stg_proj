@@ -7,6 +7,12 @@
 <form id="interest-point-form" class="mb-6">
     {% csrf_token %}
     <input type="file" name="image" accept="image/*" class="mb-4 border p-2 w-full rounded" required>
+    <select name="detection_type" class="mb-4 border p-2 w-full rounded">
+        <option value="corners">Corner Detection</option>
+        <option value="edges">Edge Detection</option>
+        <option value="blobs">Blob Detection</option>
+        <option value="keypoints">Keypoint Detection</option>
+    </select>
     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
         Detect Interest Points
     </button>

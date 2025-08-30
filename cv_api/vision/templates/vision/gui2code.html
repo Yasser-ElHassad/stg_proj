@@ -3,6 +3,59 @@
 {% block title %}GUI2Code{% endblock %}
 
 {% block content %}
-<h2 class="text-2xl font-bold mb-4">GUI2Code</h2>
-<p>This page will handle GUI-to-Code conversion tasks.</p>
+<h2 class="text-xl font-bold mb-4">GUI to Code Conversion</h2>
+<form id="gui2code-form" class="mb-6">
+    {% csrf_token %}
+    <input type="file" name="image" accept="image/*" class="mb-4 border p-2 w-full rounded" required>
+    <select name="framework" class="mb-4 border p-2 w-full rounded">
+        <option value="html">HTML</option>
+        <option value="react">React</option>
+        <option value="vue">Vue.js</option>
+        <option value="angular">Angular</option>
+    </select>
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        Generate Code
+    </button>
+</form>
+
+<div id="gui2code-result" class="hidden">
+    <div class="p-3 bg-green-100 text-green-800 rounded mb-4">
+        <p><strong>Generated Code for:</strong> <span id="framework-name"></span></p>
+        <p class="mt-2"><strong>Processing Time:</strong> <span id="gui2code-processing-time"></span>s</p>
+    </div>
+    <div class="mt-4">
+        <h4 class="font-bold mb-2">Generated Code:</h4>
+        <pre id="generated-code" class="bg-gray-100 p-4 rounded overflow-x-auto text-sm"></pre>
+    </div>
+    <div id="gui2code-image" class="mt-4"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+document.getElementById('gui2code-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    
+    try {
+        const response = await axios.post('/api/gui2code/', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        });
+        
+        const result = response.data;
+        
+        document.getElementById('framework-name').textContent = result.framework.toUpperCase();
+        document.getElementById('gui2code-processing-time').textContent = result.processing_time;
+        document.getElementById('generated-code').textContent = result.generated_code;
+        
+        document.getElementById('gui2code-image').innerHTML = 
+            `<img src="${result.image_url}" class="rounded shadow-md max-w-sm" alt="Uploaded Image">`;
+        
+        document.getElementById('gui2code-result').classList.remove('hidden');
+    } catch (error) {
+        alert('Error: ' + (error.response?.data?.error || 'Unknown error occurred'));
+    }
+});
+</script>
 {% endblock %}

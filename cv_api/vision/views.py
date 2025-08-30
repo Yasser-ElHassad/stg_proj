@@ -1,14 +1,81 @@
 from django.conf import settings
 from django.shortcuts import render
 from django.core.files.storage import default_storage
-import  os
+import os
+import time, json
+from rest_framework.decorators import api_view, parser_classes
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.response import Response
+from rest_framework import status
+from django.urls import reverse
+from .serializers import (
+    ImageUploadSerializer, PredictionResponseSerializer,
+    OCRRequestSerializer, OCRResponseSerializer,
+    Model2DRequestSerializer, Model2DResponseSerializer,
+    Model3DRequestSerializer, Model3DResponseSerializer,
+    GUI2CodeRequestSerializer, GUI2CodeResponseSerializer,
+    InterestPointRequestSerializer, InterestPointResponseSerializer
+)
+from .cv_models.pointinteret import InterestPointExtractor
+import cv2
+import numpy as np
+
+
 # Example placeholder model (replace with your real model)
-def dummy_model(image):
+def model(image):
     # TODO: load your ML model (e.g. PyTorch/TensorFlow)
     return "cat"  # just a dummy return
-from django.shortcuts import render
 
+def ocr_model(image, language="eng"):
+    # TODO: implement actual OCR model
+    return "Sample extracted text from image"
 
+def detection_2d_model(image):
+    # TODO: implement actual 2D object detection
+    return [
+        {"class": "person", "confidence": 0.95, "bbox": [100, 100, 200, 300]},
+        {"class": "car", "confidence": 0.87, "bbox": [300, 150, 450, 250]}
+    ]
+
+def detection_3d_model(image):
+    # TODO: implement actual 3D object detection
+    return [
+        {"class": "chair", "confidence": 0.92, "depth": 2.5, "position": [1.2, 0.8, 2.5]},
+        {"class": "table", "confidence": 0.88, "depth": 1.8, "position": [0.5, 0.0, 1.8]}
+    ]
+
+def gui2code_model(image, framework="html"):
+    # TODO: implement actual GUI to code conversion
+    if framework == "html":
+        return """<div class="container">
+    <h1>Sample Generated Code</h1>
+    <p>This is a sample HTML structure generated from the GUI image.</p>
+</div>"""
+    elif framework == "react":
+        return """import React from 'react';
+
+function GeneratedComponent() {
+    return (
+        <div className="container">
+            <h1>Sample Generated Code</h1>
+            <p>This is a sample React component generated from the GUI image.</p>
+        </div>
+    );
+}
+
+export default GeneratedComponent;"""
+    else:
+        return f"Generated code for {framework} framework"
+
+def interest_point_model(image, detection_type="corners"):
+    # Load image from file_path
+    image_path = os.path.join(settings.MEDIA_ROOT, file_path)
+    image = cv2.imread(image_path)
+    extractor = InterestPointExtractor(min_prominence=0.5, min_distance=3)
+    result_json = extractor.process_image(image)
+    points = json.loads(result_json)["interest_points"]
+
+# # Template-based views (existing)
 def home_view(request):
     return render(request, "vision/home.html")
 
@@ -24,20 +91,243 @@ def model3d_view(request):
 def gui2code_view(request):
     return render(request, "vision/gui2code.html")
 
+def interest_point_view(request):
+    return render(request, "vision/interest_point.html")
+
 def upload_and_predict(request):
     prediction = None
     uploaded_image_url = None
     
     if request.method == "POST" and request.FILES.get("image"):
         img_file = request.FILES["image"]
-        # Save to "uploads/" inside MEDIA_ROOT
         file_path = default_storage.save(f'uploads/{img_file.name}', img_file)
-        full_path = os.path.join(settings.MEDIA_ROOT, file_path)
-
-        # Dummy prediction
         prediction = "cat"
         uploaded_image_url = settings.MEDIA_URL + file_path
 
     return render(request, "vision/upload.html", 
                   {"prediction": prediction,
-                  "uploaded_image_url":uploaded_image_url})
+                  "uploaded_image_url": uploaded_image_url})
+
+# API Views (new)
+@api_view(['POST'])
+@parser_classes([MultiPartParser, FormParser])
+def api_upload_and_predict(request):
+    """API endpoint for image upload and prediction"""
+    start_time = time.time()
+    
+    serializer = ImageUploadSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        image = serializer.validated_data['image']
+        # Save image
+        file_path = default_storage.save(f'uploads/{image.name}', image)
+        image_url = settings.MEDIA_URL + file_path
+        # Get prediction (replace with actual model)
+        prediction = model(image)
+        confidence = 0.95  # Dummy confidence
+        processing_time = time.time() - start_time
+        response_data = {
+            'prediction': prediction,
+            'confidence': confidence,
+            'image_url': image_url,
+            'processing_time': round(processing_time, 3)
+        }
+        response_serializer = PredictionResponseSerializer(response_data)
+        return Response(response_serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response(
+            {'error': f'Processing failed: {str(e)}'}, 
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+@api_view(['POST'])
+@parser_classes([MultiPartParser, FormParser])
+def api_ocr(request):
+    """API endpoint for OCR text extraction"""
+    start_time = time.time()
+    
+    serializer = OCRRequestSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        image = serializer.validated_data['image']
+        language = serializer.validated_data.get('language', 'eng')
+        # Save image
+        file_path = default_storage.save(f'uploads/{image.name}', image)
+        image_url = settings.MEDIA_URL + file_path
+        # Extract text (replace with actual OCR model)
+        extracted_text = ocr_model(image, language)
+        confidence = 0.92  # Dummy confidence
+        processing_time = time.time() - start_time
+        response_data = {
+            'extracted_text': extracted_text,
+            'confidence': confidence,
+            'image_url': image_url,
+            'processing_time': round(processing_time, 3)
+        }
+        response_serializer = OCRResponseSerializer(response_data)
+        return Response(response_serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response(
+            {'error': f'OCR processing failed: {str(e)}'}, 
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+@api_view(['POST'])
+@parser_classes([MultiPartParser, FormParser])
+def api_model2d(request):
+    """API endpoint for 2D object detection"""
+    start_time = time.time()
+    
+    serializer = Model2DRequestSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        image = serializer.validated_data['image']
+        # Save image
+        file_path = default_storage.save(f'uploads/{image.name}', image)
+        image_url = settings.MEDIA_URL + file_path
+        # Detect objects (replace with actual 2D detection model)
+        objects = detection_2d_model(image)
+        processing_time = time.time() - start_time
+        response_data = {
+            'objects': objects,
+            'image_url': image_url,
+            'processing_time': round(processing_time, 3)
+        }
+        response_serializer = Model2DResponseSerializer(response_data)
+        return Response(response_serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response(
+            {'error': f'2D detection failed: {str(e)}'}, 
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+@api_view(['POST'])
+@parser_classes([MultiPartParser, FormParser])
+def api_model3d(request):
+    """API endpoint for 3D object detection"""
+    start_time = time.time()
+    
+    serializer = Model3DRequestSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        image = serializer.validated_data['image']
+        # Save image
+        file_path = default_storage.save(f'uploads/{image.name}', image)
+        image_url = settings.MEDIA_URL + file_path
+        # Detect 3D objects (replace with actual 3D detection model)
+        objects_3d = detection_3d_model(image)
+        processing_time = time.time() - start_time
+        response_data = {
+            'objects_3d': objects_3d,
+            'image_url': image_url,
+            'processing_time': round(processing_time, 3)
+        }
+        response_serializer = Model3DResponseSerializer(response_data)
+        return Response(response_serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response(
+            {'error': f'3D detection failed: {str(e)}'}, 
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+@api_view(['POST'])
+@parser_classes([MultiPartParser, FormParser])
+def api_gui2code(request):
+    """API endpoint for GUI to code conversion"""
+    start_time = time.time()
+    
+    serializer = GUI2CodeRequestSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        image = serializer.validated_data['image']
+        framework = serializer.validated_data.get('target_framework', 'html')
+        # Save image
+        file_path = default_storage.save(f'uploads/{image.name}', image)
+        image_url = settings.MEDIA_URL + file_path
+        # Generate code (replace with actual GUI to code model)
+        generated_code = gui2code_model(image, framework)
+        processing_time = time.time() - start_time
+        response_data = {
+            'generated_code': generated_code,
+            'framework': framework,
+            'image_url': image_url,
+            'processing_time': round(processing_time, 3)
+        }
+        response_serializer = GUI2CodeResponseSerializer(response_data)
+        return Response(response_serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response(
+            {'error': f'Code generation failed: {str(e)}'}, 
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+@api_view(['POST'])
+@parser_classes([MultiPartParser, FormParser])
+def api_interest_point(request):
+    """API endpoint for interest point detection"""
+    start_time = time.time()
+    
+    serializer = InterestPointRequestSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+            image = serializer.validated_data['image']
+            # Save image
+            file_path = default_storage.save(f'uploads/{image.name}', image)
+            image_url = settings.MEDIA_URL + file_path
+
+            # Load image from disk for OpenCV
+            image_path = os.path.join(settings.MEDIA_ROOT, file_path)
+            image_cv = cv2.imread(image_path)
+            if image_cv is None:
+                raise Exception('Failed to load image for processing.')
+
+            # Use InterestPointExtractor
+            extractor = InterestPointExtractor(min_prominence=0.5, min_distance=3)
+            result_json = extractor.process_image(image_cv)
+            result = json.loads(result_json)
+            points = []
+            for p in result.get('interest_points', []):
+                # Format for frontend (x, y, type, confidence)
+                points.append({
+                    'x': p.get('x', p.get('x_index', 0)),
+                    'y': p.get('y', p.get('y_value', 0)),
+                    'type': p.get('type', ''),
+                    'confidence': 1.0  # You can adjust this if your model provides confidence
+                })
+
+            processing_time = time.time() - start_time
+            response_data = {
+                'points': points,
+                'detection_type': 'interest_point',
+                'image_url': image_url,
+                'processing_time': round(processing_time, 3)
+            }
+            response_serializer = InterestPointResponseSerializer(response_data)
+            return Response(response_serializer.data, status=status.HTTP_200_OK)
+        
+    except Exception as e:
+        return Response(
+            {'error': f'Interest point detection failed: {str(e)}'}, 
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+@api_view(['GET'])
+def api_health_check(request):
+    """Health check endpoint for API status"""
+    return Response({
+        'status': 'healthy',
+        'message': 'CV API is running',
+        'version': '1.0.0'
+    }, status=status.HTTP_200_OK)
